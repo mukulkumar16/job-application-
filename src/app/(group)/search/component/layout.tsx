@@ -5,11 +5,11 @@ import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export default function Layout({ children }) {
-  const searchparams = useSearchParams();
-  const searchterm = searchparams.get("q");
-  const minAm = searchparams.get("min");
-  const maxAm = searchparams.get("max");
-  const jobTypeQuery = searchparams.get("jobType");
+  const searchParams = useSearchParams();
+  const searchterm = searchParams.get("q");
+  const minAm = searchParams.get("min");
+  const maxAm = searchParams.get("max");
+  const jobTypeQuery = searchParams.get("jobType");
 
   const [min, setMin] = useState(minAm || "");
   const [max, setMax] = useState(maxAm || "");
@@ -20,24 +20,20 @@ export default function Layout({ children }) {
   function handleSubmit(e) {
     e.preventDefault();
     let url = "/search?";
-
     if (searchterm) url += `q=${searchterm}`;
     if (min) url += `&min=${min}`;
     if (max) url += `&max=${max}`;
     if (jobType) url += `&jobType=${jobType}`;
-
     router.push(url);
   }
 
   return (
     <div className="p-4">
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar / Filter */}
+        {/* Filter Sidebar */}
         <div className="w-full lg:w-[300px] bg-blue-100 rounded-lg p-4 font-semibold">
           <h1 className="text-xl font-bold mb-4 text-center lg:text-left">Find Jobs</h1>
-
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Salary Filter */}
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="number"
@@ -55,7 +51,6 @@ export default function Layout({ children }) {
               />
             </div>
 
-            {/* Job Type Radio Buttons */}
             <div>
               <h2 className="pt-2 pb-1 text-center sm:text-left">Job Type</h2>
               <div className="space-y-2">
@@ -75,7 +70,6 @@ export default function Layout({ children }) {
               </div>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition"
@@ -85,7 +79,7 @@ export default function Layout({ children }) {
           </form>
         </div>
 
-        {/* Children Content */}
+        {/* Main Content Area */}
         <div className="flex-1">{children}</div>
       </div>
     </div>
