@@ -1,47 +1,53 @@
-//@ts-nocheck
+// @ts-nocheck
 'use client'
+
 import { useContext } from "react"
 import { userContext } from "../(group)/layout"
+import { useRouter } from "next/navigation"
 
-export default function EditDelete({ job  }) {
+export default function EditDelete({ job }) {
+    const { user } = useContext(userContext);
+    const router = useRouter();
 
-    // console.log("apna user " , user);
-
-    const {user} = useContext(userContext);
-    console.log("user context" , user);
-
-   async function handleclick(){
-        try{
-            const res = await fetch("/api/product/" + job.id ,{
-                method : "DELETE"
+    async function handleDelete() {
+        try {
+            const res = await fetch("/api/product/" + job.id, {
+                method: "DELETE"
             });
             const data = await res.json();
-            if(data.success){
-                alert("deleted successfully");
+            if (data.success) {
+                alert("Deleted successfully");
+                router.refresh(); // Optional: Refresh page to reflect deletion
+            } else {
+                alert("Something went wrong");
             }
-            else{
-                alert("something wents wrong");
-            }
-        }catch(err){
+        } catch (err) {
             alert("DB problem");
         }
     }
 
+    function handleEdit() {
+        router.push(`/edit-job/${job.id}`); // ✅ Update this path if needed
+    }
 
-    if (user?.company?.id == job?.company?.id) 
-    {
-
+    if (user?.company?.id === job?.company?.id) {
         return (
-            <div>
-                <button onClick={handleclick} className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition">
-                    edit 
+            <div className="flex gap-4 mt-4 flex-wrap">
+                <button
+                    onClick={handleEdit}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
+                >
+                    Edit
                 </button>
-                <button className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition">
-                    delete
+                <button
+                    onClick={handleDelete}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition"
+                >
+                    Delete
                 </button>
             </div>
-        )
-
+        );
     }
-    else return null
+
+    return null;
 }

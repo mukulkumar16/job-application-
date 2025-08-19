@@ -1,7 +1,4 @@
-
-
-
-
+//@ts-nocheck
 "use client";
 
 import {
@@ -87,11 +84,16 @@ export default function Page() {
   if (!job) return <Text color="red">Job not found.</Text>;
 
   return (
-    <Box className="max-w-5xl mx-auto px-6 py-8 bg-white rounded-lg shadow-md space-y-8">
-      {/* Header */}
-      <Flex align="center" justify="between" wrap="wrap" className="gap-6">
+    <Box className="max-w-5xl mx-auto px-4 py-6 md:px-8 md:py-10 bg-white rounded-xl shadow-lg space-y-8">
+      {/* Top Section */}
+      <Flex
+        align="start"
+        justify="between"
+        direction={{ initial: "column", md: "row" }}
+        className="gap-4"
+      >
         <Box>
-          <Heading size="7" className="mb-2">
+          <Heading size="7" className="mb-2 text-wrap break-words">
             {job.title}
           </Heading>
           <Text size="4" color="gray">
@@ -99,16 +101,16 @@ export default function Page() {
           </Text>
         </Box>
 
-        <Flex gap="4" align="center" className="mt-4 sm:mt-0">
+        <Flex gap="4" align="center" className="flex-wrap">
           <ApplyDelete job={job} userapply={appliedUser} />
         </Flex>
       </Flex>
 
       <Separator size="4" />
 
-      {/* Company */}
+      {/* Company Card */}
       <Card size="3" className="bg-gray-100 border rounded-lg">
-        <Flex align="center" gap="4">
+        <Flex align="center" gap="4" className="flex-wrap">
           <Avatar
             fallback={job.company.name.charAt(0).toUpperCase()}
             size="5"
@@ -128,17 +130,17 @@ export default function Page() {
 
       {/* Job Description */}
       <Box>
-        <Heading size="5" mb="2">
+        <Heading size="5" className="mb-2">
           📝 Job Description
         </Heading>
-        <Text as="p" size="4" color="gray">
+        <Text as="p" size="4" color="gray" className="leading-relaxed">
           {job.description}
         </Text>
       </Box>
 
-      {/* Details */}
+      {/* Job Details */}
       <Box>
-        <Heading size="5" mb="2">
+        <Heading size="5" className="mb-2">
           📌 Job Details
         </Heading>
         <Flex direction="column" gap="3" className="text-[16px]">
@@ -158,7 +160,7 @@ export default function Page() {
       </Box>
 
       {/* Edit Button */}
-      <Box className="mt-6">
+      <Box className="pt-6">
         <Editjob job={job} />
       </Box>
     </Box>

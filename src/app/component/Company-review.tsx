@@ -1,106 +1,93 @@
-//@ts-nocheck
-'use client'
-import { Button, Card, TextArea, TextField } from "@radix-ui/themes";
-import { Tabs } from "radix-ui";
+// @ts-nocheck
+'use client';
+
+import { Button, Card, TextArea } from "@radix-ui/themes";
+import * as Tabs from "@radix-ui/react-tabs";
 import { useState } from "react";
 
+export default function CompanyReviewAndJobContainer({ company, Reviews }) {
+  const jobs = company.job;
 
-export default function CompanyReviewAndJobContainer({company , Reviews}){
+  const [review, setReview] = useState(""); // For new review input
+  const [allReviews, setAllReviews] = useState(Reviews); // Existing reviews
 
+  async function handleClick() {
+    const reviewData = {
+      content: review,
+      company_id: company.id,
+    };
 
-	console.log("reviews === " , Reviews )
+    const res = await fetch("/api/review", {
+      method: "POST",
+      body: JSON.stringify(reviewData),
+    });
 
-	const jobs = company.job;
-	console.log(company);
+    const data = await res.json();
+    if (data.success) {
+      alert("Review created");
+      setAllReviews((prev) => [...prev, { content: review }]); // Add to review list
+      setReview(""); // Reset field
+    } else {
+      alert("Something went wrong");
+    }
+  }
 
-	const [reviews , setreviews] = useState(Reviews);
+  return (
+    <div className="w-full mt-8">
+      <Tabs.Root defaultValue="listed-jobs" className="w-full">
+        <Tabs.List className="flex gap-4 mb-4">
+          <Tabs.Trigger
+            className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+            value="listed-jobs"
+          >
+            Listed Jobs
+          </Tabs.Trigger>
+          <Tabs.Trigger
+            className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+            value="reviews"
+          >
+            Reviews
+          </Tabs.Trigger>
+        </Tabs.List>
 
-	async function handleClick(){
-		const reviewData = {
-		content : review,
-		company_id : company.id
-	}
+        {/* Listed Jobs Tab */}
+        <Tabs.Content value="listed-jobs" className="space-y-4">
+          {jobs.map((job) => (
+            <Card key={job.id} className="p-4 shadow-md">
+              <h2 className="text-lg font-semibold text-gray-800">Job: {job.title}</h2>
+              <p className="text-gray-600">Description: {job.description}</p>
+            </Card>
+          ))}
+        </Tabs.Content>
 
-	const res = await fetch("/api/review",{
-		method : "POST",
-		body : JSON.stringify(reviewData)
-	} )
+        {/* Reviews Tab */}
+        <Tabs.Content value="reviews">
+          <div className="flex flex-col gap-4">
+            <TextArea
+              placeholder="Add a review..."
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              className="w-full"
+            />
+            <Button onClick={handleClick} className="w-full sm:w-fit bg-green-600 text-white hover:bg-green-700">
+              Add Review
+            </Button>
+          </div>
 
-	const data = await res.json();
-	if(data.success){
-		alert("review create")
-	}
-	else{
-		alert("something wents wrong")
-	}
-	}
-
-
-
-
-	// console.log("review == > ", review);
-
-
-    
-    return (
-        <div>
-            
-            <Tabs.Root className="TabsRoot " defaultValue="listed-jobs">
-		<Tabs.List className="TabsList " aria-label="Manage your account">
-			<div className="flex gap-4">
-				<Tabs.Trigger className="TabsTrigger p-2 boreder rounded-lg bg-green-500 text-amber-50" value="listed-jobs">
-				Listed jobs 
-			</Tabs.Trigger>
-			<Tabs.Trigger className="TabsTrigger p-2 border rounded-lg bg-green-500 text-amber-50" value="reviews">
-				Reviews 
-			</Tabs.Trigger>
-			</div>
-		</Tabs.List>
-		<Tabs.Content className="TabsContent  " value="listed-jobs">
-			<div className="Text ">
-				 {
-                    jobs.map((job)=>{
-                        return (
-                            <div key={job.id}>
-                                <h1> Job  : {job.title}</h1>
-                                <h1> Job description : {job.description}</h1>
-
-                            </div>
-                        )
-                    })
-                }
-			</div>
-			
-			
-			
-		</Tabs.Content>
-		<Tabs.Content className="TabsContent" value="reviews">
-
-			<div className="flex-col ">
-				<TextArea placehoder="add a review " value={reviews} onChange={(e)=>{setreviews(e.target.value)}} />
-			<Button onClick={handleClick} className="mt-10">Add review</Button>
-			</div>
-			<Card className="mt-10">
-				<p className="Text">
-				Top review 
-			</p>
-			</Card>
-			<div>
-				{/* {
-					reviews.map((rev)=>{
-						return (
-							<Card key={rev.id}>
-								<p>{rev.content}</p>
-							</Card>
-						)
-					})
-				} */}
-			</div>
-			
-			
-		
-		</Tabs.Content>
-	</Tabs.Root>
-        </div>
-    )
+          <div className="mt-6 space-y-4">
+            <h3 className="text-lg font-bold">Top Reviews</h3>
+            {allReviews.length === 0 ? (
+              <p className="text-gray-500">No reviews yet.</p>
+            ) : (
+              allReviews.map((rev, idx) => (
+                <Card key={idx} className="p-4 shadow-md">
+                  <p className="text-gray-700">{rev.content}</p>
+                </Card>
+              ))
+            )}
+          </div>
+        </Tabs.Content>
+      </Tabs.Root>
+    </div>
+  );
 }

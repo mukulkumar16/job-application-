@@ -4,10 +4,10 @@ import prismaclient from "@/services/prisma";
 import { Header } from "../component/Header";
 import JobCard from "../component/JobCard";
 import CompanyReviewAndJobContainer from "../component/Company-review";
-// import data from './constant/data';
+
 
 export default async function Page() {
-  // console.log(data);
+
 
   const jobs = await prismaclient.openings.findMany({
     include : {
@@ -21,7 +21,7 @@ export default async function Page() {
   return (
 
     <div>
-      {/* <Header/> */}
+      
 
 
     <div className="p-6">
@@ -33,7 +33,7 @@ export default async function Page() {
         ))}
       </div>
     </div>
-    {/* <CompanyReviewAndJobContainer/> */}
+    
         </div>
   );
 }

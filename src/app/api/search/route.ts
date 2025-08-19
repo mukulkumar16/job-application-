@@ -7,7 +7,7 @@ export async function GET(req : NextRequest){
     const q = searchParams.get('q');
     console.log(q);
     const mn = searchParams.get('min') ? Number.parseInt(searchParams.get('min')) : 0 ;
-    const mx = searchParams.get('max') ? Number.parseInt(searchParams.get('max')) : 1000000 ;
+    const mx = searchParams.get('max') ? Number.parseInt(searchParams.get('max')) : 100000 ;
     const jobtype = searchParams.get('jobType') || 'on-site';
 
     console.log(jobtype);
@@ -16,38 +16,38 @@ export async function GET(req : NextRequest){
 
         const jobs = await prismaclient.openings.findMany({
             where : {
-                // title : {
-                //     contains : q , 
-                //     mode : "insensitive"
-                // },
+                title : {
+                    contains : q , 
+                    mode : "insensitive"
+                },
 
-                // salary : {
-                //     gte : mn,
-                //     lte : mx
-                // },
+                salary : {
+                    gte : mn,
+                    lte : mx
+                },
                 
 
-                OR : [
-                    {
-                        title : {
-                            contains : q,
-                            mode : "insensitive"
-                        },
-                        salary : {
-                            gte : mn,
-                            lte : mx
-                        },
-                        job_type : jobtype
-                    },
-                    {
-                        company : {
-                            name : {
-                                contains : q ,
-                                mode : "insensitive"
-                            }
-                        }
-                    }
-                ]
+                // OR : [
+                //     {
+                //         title : {
+                //             contains : q,
+                //             mode : "insensitive"
+                //         },
+                //         salary : {
+                //             gte : mn,
+                //             lte : mx
+                //         },
+                //         job_type : jobtype
+                //     },
+                //     {
+                //         company : {
+                //             name : {
+                //                 contains : q ,
+                //                 mode : "insensitive"
+                //             }
+                //         }
+                //     }
+                // ]
                 
             
         

@@ -1,128 +1,92 @@
-//@ts-nocheck
-'use client';
+// @ts-nocheck
+"use client";
 
-import { useState } from 'react';
-import { Header } from '@/app/component/Header';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function Layout({ children }) {
   const searchparams = useSearchParams();
-  const searchterm = searchparams.get('q');
-  const minAm = searchparams.get('min');
-  const maxAm = searchparams.get('max');
+  const searchterm = searchparams.get("q");
+  const minAm = searchparams.get("min");
+  const maxAm = searchparams.get("max");
+  const jobTypeQuery = searchparams.get("jobType");
 
-  const [min, setmin] = useState(minAm || '');
-  const [max, setmax] = useState(maxAm || '');
-  const [jobType , setJobType] = useState("");
+  const [min, setMin] = useState(minAm || "");
+  const [max, setMax] = useState(maxAm || "");
+  const [jobType, setJobType] = useState(jobTypeQuery || "");
 
   const router = useRouter();
 
-  function handlemin(event) {
-    setmin(event.target.value);
-  }
-
-  function handlemax(event) {
-    setmax(event.target.value);
-  }
-
-  function handlego(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    let url = '/search?';
+    let url = "/search?";
 
-    if (searchterm) {
-      url += `q=${searchterm}`;
-    }
-
-    if (min) {
-      url += `&min=${min}`;
-    }
-
-    if (max) {
-      url += `&max=${max}`;
-    }
-
-    if(jobType){
-      url += `&jobType=${jobType}`;
-    }
-  
+    if (searchterm) url += `q=${searchterm}`;
+    if (min) url += `&min=${min}`;
+    if (max) url += `&max=${max}`;
+    if (jobType) url += `&jobType=${jobType}`;
 
     router.push(url);
   }
 
   return (
-    <div>
-      {/* <Header /> */}
-      <div className="flex h-[800px] p-3">
-        <div className="w-[300px] h-[800px] flex flex-col p-6 bg-blue-100 rounded-lg font-bold">
-          <h1>Find jobs</h1>
-          <form onSubmit={handlego}>
-            <div>
+    <div className="p-4">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar / Filter */}
+        <div className="w-full lg:w-[300px] bg-blue-100 rounded-lg p-4 font-semibold">
+          <h1 className="text-xl font-bold mb-4 text-center lg:text-left">Find Jobs</h1>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Salary Filter */}
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="number"
                 value={min}
-                className="p-2 font-semibold border-3 rounded-lg border-green-600 m-2"
-                onChange={handlemin}
-                placeholder="Enter min Salary"
+                onChange={(e) => setMin(e.target.value)}
+                placeholder="Min Salary"
+                className="p-2 rounded-lg border border-green-600 w-full"
               />
               <input
                 type="number"
                 value={max}
-                className="p-2 font-semibold border-3 rounded-lg border-green-600 m-2"
-                onChange={handlemax}
-                placeholder="Enter max Salary"
+                onChange={(e) => setMax(e.target.value)}
+                placeholder="Max Salary"
+                className="p-2 rounded-lg border border-green-600 w-full"
               />
             </div>
-           
 
-       
-          <h1 className="flex justify-center pb-2 pt-5">Job type</h1>
+            {/* Job Type Radio Buttons */}
+            <div>
+              <h2 className="pt-2 pb-1 text-center sm:text-left">Job Type</h2>
+              <div className="space-y-2">
+                {["on-site", "remote", "hybrid"].map((type) => (
+                  <div className="flex items-center gap-2" key={type}>
+                    <input
+                      className="h-4 w-4"
+                      type="radio"
+                      name="jobType"
+                      value={type}
+                      checked={jobType === type}
+                      onChange={(e) => setJobType(e.target.value)}
+                    />
+                    <label className="capitalize">{type}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-<div className="flex gap-2 items-center">
-  <input
-    className="h-4 w-4"
-    type="radio"
-    name="jobType"
-    value="on-site"
-    checked={jobType === 'on-site'}
-    onChange={(e) => setJobType(e.target.value)}
-  />
-  <div>On-Site</div>
-</div>
-
-<div className="flex gap-2 items-center">
-  <input
-    className="h-4 w-4"
-    type="radio"
-    name="jobType"
-    value="remote"
-    checked={jobType === 'remote'}
-    onChange={(e) => setJobType(e.target.value)}
-  />
-  <div>Remote</div>
-</div>
-
-<div className="flex gap-2 items-center">
-  <input
-    className="h-4 w-4"
-    type="radio"
-    name="jobType"
-    value="hybrid"
-    checked={jobType === 'hybrid'}
-    onChange={(e) => setJobType(e.target.value)}
-  />
-  <div>Hybrid</div>
-</div>
- <button onClick={handlego}
+            {/* Submit */}
+            <button
               type="submit"
-              className="p-2 mt-7 rounded-lg w-[200px] border font-bold bg-green-400"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition"
             >
-              Go
+              Apply Filters
             </button>
           </form>
-
         </div>
 
-        {children}
+        {/* Children Content */}
+        <div className="flex-1">{children}</div>
       </div>
     </div>
   );
