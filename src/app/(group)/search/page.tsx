@@ -1,21 +1,37 @@
 // @ts-nocheck
 'use client';
+
+import { useSearchParams } from 'next/navigation';
 import JobCard from '@/app/component/JobCard';
-import prismaclient from '@/services/prisma';
+import { useEffect, useState } from 'react';
 
-export default async function Page({ searchParams }) {
-  const query = searchParams.q;
-  const minParam = searchParams.min ? Number.parseInt(searchParams.min) : 0;
-  const maxParam = searchParams.max ? Number.parseInt(searchParams.max) : 1000000;
-  const jobType = searchParams.jobType || "";
-  const limit = 10;
+export default function Page() {
+  const searchParams = useSearchParams();
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const res = await fetch(
-    `http://localhost:3000/api/search?q=${query}&min=${minParam}&max=${maxParam}&jobType=${jobType}`
-  );
+  const query = searchParams.get("q") || "";
+  const minParam = parseInt(searchParams.get("min") || "0");
+  const maxParam = parseInt(searchParams.get("max") || "1000000");
+  const jobType = searchParams.get("jobType") || "";
 
-  const dat = await res.json();
-  const jobs = dat.data;
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch(
+          `/api/search?q=${query}&min=${minParam}&max=${maxParam}&jobType=${jobType}`
+        );
+        const data = await res.json();
+        setJobs(data.data);
+      } catch (err) {
+        console.error("Error fetching jobs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [query, minParam, maxParam, jobType]);
 
   return (
     <div className="p-4 sm:p-6 md:p-10">
@@ -23,9 +39,11 @@ export default async function Page({ searchParams }) {
         Search Results for: <span className="text-green-600">"{query}"</span>
       </h1>
 
-      {jobs.length > 0 ? (
+      {loading ? (
+        <div className="text-center text-gray-600">Loading jobs...</div>
+      ) : jobs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {jobs.map((job: OpeningWithCompany) => (
+          {jobs.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}
         </div>
