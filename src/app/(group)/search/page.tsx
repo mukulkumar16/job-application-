@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 import JobCard from '@/app/component/JobCard';
 import prismaclient from '@/services/prisma';
 
