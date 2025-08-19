@@ -1,8 +1,8 @@
 import { GetUserFromCookies } from "@/helper";
 import prismaclient from "@/services/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function  POST(req ) {
+export async function  POST(req : NextRequest ) {
     const user = await GetUserFromCookies();
     const body = await req.json();
 

@@ -1,7 +1,7 @@
 import prismaclient from "@/services/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req , {params}){
+export async function GET(req : NextRequest , {params} : any){
     const job_id = params.id;
     try{
 
@@ -21,7 +21,7 @@ export async function GET(req , {params}){
 
     }
     catch(err){
-        console.log(err.message);
+        console.log(err);
         return NextResponse.json({
             success : false ,
             data : {
@@ -35,16 +35,29 @@ export async function GET(req , {params}){
 
 
 
- export async function DELETE(){
-    try {
+export async function DELETE(req: NextRequest, { params }: any) {
+  const application_id = params.id;
 
-        
-    } catch (error) {
-        console.log(error.message)
-        return NextResponse.json({
-            success : false,
-            message : "failed"
-        })
-        
-    }
- }
+  try {
+    const deleted = await prismaclient.applictaion.delete({
+      where: {
+        id: application_id,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Deleted successfully",
+      data: deleted,
+    });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to delete",
+      },
+      { status: 500 }
+    );
+  }
+}

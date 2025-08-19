@@ -1,7 +1,7 @@
 import prismaclient from "@/services/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req , {params}) {
+export async function GET(req : NextRequest, {params} : any) {
 
     const {companyID}  =  params;
     try{

@@ -3,36 +3,23 @@ import { GetUserFromCookies } from "@/helper";
 import prismaclient from "@/services/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req ){
+export async function POST(req : NextRequest){
     const body = await req.json();
-    // const user = await GetUserFromCookies();
-    // console.log(body.title);
-    // const prodToStore = {
-    //      title: body.title,
-    //         description: body.description,
-    //         location: body.location,
-    //         salary: body.salary,
-    //         employment_type: body.employment_type,
-    //         job_type: body.job_type
-      
-    // }
-
-    // const dataTosave = {
-    //     ...body,
-    //     company_id : user?.company?.id
-    // }
-
-    // console.log(prodToStore);
+    
     const product = await prismaclient.openings.create({
         data : body
     })
 
-    if(!product){
-        return {
-            success : false,
-            message : "not added"
-        }
-    }
+    if (!product) {
+  return NextResponse.json(
+    {
+      success: false,
+      message: "Not added",
+    },
+    { status: 500 }
+  );
+}
+
 
     return NextResponse.json({
         success : true,

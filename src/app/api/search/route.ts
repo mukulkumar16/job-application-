@@ -26,32 +26,7 @@ export async function GET(req : NextRequest){
                     lte : mx
                 },
                 
-
-                // OR : [
-                //     {
-                //         title : {
-                //             contains : q,
-                //             mode : "insensitive"
-                //         },
-                //         salary : {
-                //             gte : mn,
-                //             lte : mx
-                //         },
-                //         job_type : jobtype
-                //     },
-                //     {
-                //         company : {
-                //             name : {
-                //                 contains : q ,
-                //                 mode : "insensitive"
-                //             }
-                //         }
-                //     }
-                // ]
-                
-            
-        
-                 
+   
             },
             include : {
                 company : true
