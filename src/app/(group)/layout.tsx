@@ -22,8 +22,8 @@ export default  function Layout({children} : {
             console.log(data);
             if(data.success){
 
-                setuser(data);
-                console.log( "responce h ",data.user);
+                setuser(data.data);
+                console.log( "responce h ",data.data);
             }
 
         }

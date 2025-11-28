@@ -1,26 +1,25 @@
-//@ts-nocheck
+// @ts-nocheck
 'use client';
 
-import { addProductToD } from '@/app/action/prodaction';
-import * as Dialog from '@radix-ui/react-dialog';
-import { useContext, useState } from 'react';
-import React from 'react';
+import { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { Job } from '../../../generated/prisma';
 import { userContext } from './layout';
 
-export default function Addjob() {
+export default function AddJob() {
+  const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [salary, setsalary] = useState('');
-  const [job_location, setjob_location] = useState('');
-  const [job_type, setjob_type] = useState('');
-  const [empType, setempType] = useState('');
+  const [salary, setSalary] = useState('');
+  const [job_location, setJobLocation] = useState('');
+  const [job_type, setJobType] = useState('');
+  const [empType, setEmpType] = useState('');
 
   const { user } = useContext(userContext);
   const router = useRouter();
 
-  async function handleSubmit() {
+  async function handleSubmit(e) {
+    e.preventDefault();
     const data: Job = {
       title,
       description,
@@ -40,6 +39,7 @@ export default function Addjob() {
 
     if (!reData) {
       alert('Failed to submit');
+      return;
     }
 
     if (reData.success) {
@@ -48,52 +48,96 @@ export default function Addjob() {
     } else {
       alert('Oops! Something went wrong.');
     }
+
+    setOpen(false);
   }
 
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <button className="text-left p-3 w-full rounded-md text-black hover:bg-green-100 transition">
-          Add Job
-        </button>
-      </Dialog.Trigger>
+    <div>
+      {/* Trigger button */}
+      <button
+        onClick={() => setOpen(true)}
+        className="text-left p-3 w-full rounded-md text-black hover:bg-green-100 transition"
+      >
+        Add Job
+      </button>
 
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
+      {/* Modal Overlay */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-40"
+        >
+          {/* Modal Content */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-xl shadow-lg p-6 sm:p-8 w-[95%] max-w-lg z-50"
+          >
+            <h2 className="text-xl font-bold mb-2">Add Job</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Fill in the job details below.
+            </p>
 
-        <Dialog.Content className="fixed top-1/2 left-1/2 w-[95%] max-w-lg bg-white p-6 sm:p-8 rounded-xl shadow-lg transform -translate-x-1/2 -translate-y-1/2 z-50">
-          <Dialog.Title className="text-xl font-bold mb-2">Add Job</Dialog.Title>
-          <Dialog.Description className="text-sm text-gray-600 mb-4">
-            Fill in the job details below.
-          </Dialog.Description>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <InputField
+                label="Title"
+                value={title}
+                onChange={setTitle}
+                placeholder="Enter job title"
+              />
+              <InputField
+                label="Description"
+                value={description}
+                onChange={setDescription}
+                placeholder="Enter job description"
+              />
+              <InputField
+                label="Salary"
+                type="number"
+                value={salary}
+                onChange={setSalary}
+                placeholder="Enter salary"
+              />
+              <InputField
+                label="Job Location"
+                value={job_location}
+                onChange={setJobLocation}
+                placeholder="Enter location"
+              />
+              <InputField
+                label="Employment Type"
+                value={empType}
+                onChange={setEmpType}
+                placeholder="Full-time / Part-time"
+              />
+              <InputField
+                label="Job Type"
+                value={job_type}
+                onChange={setJobType}
+                placeholder="Remote / Onsite / Hybrid"
+              />
 
-          <div className="flex flex-col gap-4">
-            <InputField label="Title" value={title} onChange={setTitle} placeholder="Enter job title" />
-            <InputField label="Description" value={description} onChange={setDescription} placeholder="Enter job description" />
-            <InputField label="Salary" type="number" value={salary} onChange={setsalary} placeholder="Enter salary" />
-            <InputField label="Job Location" value={job_location} onChange={setjob_location} placeholder="Enter location" />
-            <InputField label="Employment Type" value={empType} onChange={setempType} placeholder="Full-time / Part-time" />
-            <InputField label="Job Type" value={job_type} onChange={setjob_type} placeholder="Remote / Onsite / Hybrid" />
+              {/* Buttons */}
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
           </div>
-
-          <div className="flex justify-end gap-3 mt-6">
-            <Dialog.Close asChild>
-              <button className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition">
-                Cancel
-              </button>
-            </Dialog.Close>
-            <Dialog.Close asChild>
-              <button
-                onClick={handleSubmit}
-                className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition"
-              >
-                Save
-              </button>
-            </Dialog.Close>
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </div>
+      )}
+    </div>
   );
 }
 

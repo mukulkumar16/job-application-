@@ -14,7 +14,7 @@ export default async function Page() {
       company : true
     }
   });
-  console.log("jobs ===>>> " , jobs);
+  // console.log("jobs ===>>> " , jobs);
   
 
 
