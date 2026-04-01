@@ -1,5 +1,3 @@
-
-
 import { GetUserFromCookies } from "@/helper";
 import prismaclient from "@/services/prisma";
 import { NextRequest, NextResponse } from "next/server";

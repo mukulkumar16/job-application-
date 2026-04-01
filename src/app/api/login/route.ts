@@ -6,9 +6,7 @@ import { createToken } from "@/services/jwt";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    // console.log(body.email);
 
-    // const cookie = await cookies();
     const user = await prismaclient.user.findUnique({
         where: {
             email: body.email
@@ -27,7 +25,7 @@ export async function POST(req: NextRequest) {
             success: true,
             data : user
         });
-     res.cookies.set('token ', token);
+     res.cookies.set('token', token);
         return res;
 
     

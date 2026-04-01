@@ -12,12 +12,16 @@ import {
   Button,
 } from "@radix-ui/themes";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState , useContext} from "react";
+import { userContext } from "../../layout";
+import { useRouter } from "next/navigation";
 
 import { User } from "../../../../../generated/prisma";
+
 import ApplyJob from "@/app/component/ApplyJob";
 import ApplyDelete from "@/app/component/apply-delete-btn";
 import Editjob from "@/app/component/EditJob";
+
 
 type Company = {
   id: string;
@@ -45,6 +49,12 @@ export default function Page() {
 
   const { id } = useParams();
 
+  const userContextValue = useContext(userContext);
+  const authUser = userContextValue.user;
+  const router = useRouter();
+
+
+
   useEffect(() => {
     async function fetchJob() {
       setLoading(true);
@@ -55,33 +65,40 @@ export default function Page() {
 
         setAppliedUser(data.userapplied);
         setJob(data);
+      
       } catch (err) {
         console.error("Failed to load job:", err);
       } finally {
         setLoading(false);
+        router.refresh();
       }
     }
     fetchJob();
   }, [id]);
 
+
   useEffect(() => {
     async function fetchApplicants() {
       try {
-        const res = await fetch(`/api/applicants/${job?.id}`);
+        const res = await fetch(`/api/application/${job?.id}`);
         const data = await res.json();
         setApplicants(data.data);
       } catch (err) {
         console.error("Failed to load applicants:", err);
       } finally {
         setIsAppModal(false);
+        router.refresh();
       }
     }
 
     if (job) fetchApplicants();
   }, [job]);
 
-  if (loading) return <Text>Loading...</Text>;
-  if (!job) return <Text color="red">Job not found.</Text>;
+  console.log("user from " , authUser)
+  if (loading) return <div className="h-screen w-screen flex  items-center justify-center">Loading...</div>;
+  if (!job) return <Text className="h-screen w-screen flex  items-center justify-center" color="red">Job not found.</Text>;
+
+  // console.log("datadata :" , applicants);
 
   return (
     <Box className="max-w-5xl mx-auto px-4 py-6 md:px-8 md:py-10 bg-white rounded-xl shadow-lg space-y-8">
@@ -102,7 +119,7 @@ export default function Page() {
         </Box>
 
         <Flex gap="4" align="center" className="flex-wrap">
-          <ApplyDelete job={job} userapply={appliedUser} />
+          {!authUser?.role === "admin" && <ApplyDelete job={job} userapply={appliedUser} />}
         </Flex>
       </Flex>
 
@@ -161,8 +178,12 @@ export default function Page() {
 
       {/* Edit Button */}
       <Box className="pt-6">
-        <Editjob job={job} />
+        { authUser?.role === "admin" && <Editjob job={job} />}
       </Box>
+      {/* <div className="bg-green-400 hover:bg-green-600 p-2 w-25 rounded ">
+        apply job 
+      </div> */}
+      {/* <ApplyDelete  job={job} userapply={authUser} /> */}
     </Box>
   );
 }

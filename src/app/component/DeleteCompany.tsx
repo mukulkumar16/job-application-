@@ -3,6 +3,9 @@
 
 export default function DeleteCompany({ id }) {
   async function handleDelete() {
+    const confirmDelete = confirm("Are you sure you want to delete your company?");
+    if (!confirmDelete) return;
+
     try {
       const res = await fetch(`/api/company/${id}`, {
         method: "DELETE",
@@ -11,25 +14,34 @@ export default function DeleteCompany({ id }) {
       const data = await res.json();
 
       if (data.success) {
-        alert("Company deleted");
-        // Optionally refresh or redirect here
+        alert("Company deleted successfully");
+        // Add redirect if needed
+        // window.location.reload();
       } else {
         alert("Failed to delete company");
       }
     } catch (error) {
-      alert("Something went wrong");
+      alert("Server error");
       console.error(error);
     }
   }
 
   return (
-    <div className="mt-6">
-      <button
-        onClick={handleDelete}
-        className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg transition"
-      >
-        Delete Company
-      </button>
-    </div>
+    <button
+      onClick={handleDelete}
+      className="
+        w-full text-left 
+        
+        text-sm 
+        text-red-600
+        font-medium
+        rounded-md 
+        hover:bg-red-100 
+        transition 
+        duration-200
+      "
+    >
+      Delete Company
+    </button>
   );
 }

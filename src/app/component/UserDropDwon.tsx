@@ -1,95 +1,99 @@
-//@ts-nocheck
+// @ts-nocheck
 "use client";
+
 import { useState, useEffect, useRef } from "react";
-import { UserCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Addjob from "../(group)/Addjob";
 import DeleteCompany from "./DeleteCompany";
+import { UserCircle } from "lucide-react";
 
 export default function UserDropDown({ user }) {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const dropdownRef = useRef(null);
 
   const isLoggedIn = !!user;
+  console.log("user >>" , user);
 
   const handleLogout = async () => {
     try {
       await fetch("/api/logout", { method: "POST" });
       router.refresh();
-    } catch (err) {
-      console.error("Logout failed", err);
+    } catch (error) {
+      console.error("Logout error:", error);
     }
   };
 
-  // Close dropdown on click outside
+  // CLOSE ON CLICK OUTSIDE
   useEffect(() => {
-    const handleClickOutside = (e : any ) => {
+    const onClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
-      {/* Trigger Button */}
+    <div className="relative" ref={dropdownRef}>
+      {/* Profile Icon */}
       <button
-        onClick={() => setOpen((prev) => !prev)}
-        className="cursor-pointer p-1 sm:p-2 bg-transparent"
+        onClick={() => setOpen(!open)}
+        className="p-1 rounded-full focus:outline-none hover:ring-2 hover:ring-white transition"
       >
-        <UserCircleIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white bg-green-400 rounded-full" />
+        <UserCircle className="w-9 h-9 text-white bg-green-300 rounded-full p-1 shadow-md hover:scale-105 transition-transform" />
       </button>
 
-      {/* Dropdown Content */}
+      {/* DROPDOWN MENU */}
       {open && (
         <div
-          className="absolute right-0 mt-2 w-48 sm:w-56 bg-white border border-gray-200 rounded-md shadow-xl z-[9999]"
+          className="absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 
+          animate-fadeSlide flex flex-col overflow-hidden"
         >
           {isLoggedIn ? (
             <>
-              {/* Admin Options */}
-              {user?.data.role === "admin" && (
+              {/* Admin Section */}
+              {user?.role === "admin" && (
                 <>
-                  {!user?.data.company ? (
-                    <div
+                  {!user?.company ? (
+                    <Link
+                      href="/add-company"
+                      className="px-4 py-2 text-sm hover:bg-gray-100 transition"
                       onClick={() => setOpen(false)}
-                      className="p-2 text-sm hover:bg-gray-100 rounded-md"
                     >
-                      <Link href="/add-company">Add Company</Link>
-                    </div>
+                      Add Company
+                    </Link>
                   ) : (
-                    <div
+                    <Link
+                      href={`/company/${user?.company?.id}`}
+                      className="px-4 py-2 text-sm hover:bg-gray-100 transition"
                       onClick={() => setOpen(false)}
-                      className="p-2 text-sm hover:bg-gray-100 rounded-md"
                     >
-                      <Link href={`/company/${user?.data?.company?.id}`}>
-                        View Company
-                      </Link>
-                    </div>
+                      View Company
+                    </Link>
                   )}
                 </>
               )}
 
-              {/* Add Job (if company exists) */}
-              {user?.data?.company && (
-                <div className="p-2 text-sm hover:bg-gray-100 rounded-md">
+              {/* Add Job */}
+              {user?.company && (
+                <div className="px-4 py-2 text-sm hover:bg-gray-100 transition">
                   <Addjob />
                 </div>
               )}
 
-              {/* Job Applications */}
-              <div
+              {/* User Applications */}
+              <Link
+                href="/applied-job"
+                className="px-4 py-2 text-sm hover:bg-gray-100 transition"
                 onClick={() => setOpen(false)}
-                className="p-2 text-sm hover:bg-gray-100 rounded-md"
               >
-                <Link href="/view-job-applicant">Your job applications</Link>
-              </div>
+                Your Job Applications
+              </Link>
 
-              <hr className="my-1 border-gray-200" />
+              <hr className="my-1" />
 
               {/* Logout */}
               <button
@@ -97,26 +101,27 @@ export default function UserDropDown({ user }) {
                   handleLogout();
                   setOpen(false);
                 }}
-                className="w-full text-left p-2 text-sm hover:bg-gray-100 rounded-md text-red-500"
+                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 transition"
               >
                 Logout
               </button>
 
               {/* Delete Company */}
-              {user?.data?.company && (
-                <div className="p-2 text-sm text-red-500 hover:bg-red-100 rounded-md">
-                  <DeleteCompany id={user?.data?.company?.id} />
+              {user?.company && (
+                <div className="px-4 py-2 text-sm text-red-600 hover:bg-red-100 transition">
+                  <DeleteCompany id={user.company.id} />
                 </div>
               )}
             </>
           ) : (
             <>
-              <div
+              <Link
+                href="/login"
+                className="px-4 py-2 text-sm hover:bg-gray-100 transition"
                 onClick={() => setOpen(false)}
-                className="p-2 text-sm hover:bg-gray-100 rounded-md"
               >
-                <Link href="/login">Login</Link>
-              </div>
+                Login
+              </Link>
             </>
           )}
         </div>

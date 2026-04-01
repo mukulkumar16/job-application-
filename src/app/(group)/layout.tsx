@@ -15,7 +15,7 @@ export default  function Layout({children} : {
 
     useEffect(()=>{
         async function getuser(){
-            const res = await fetch("http://localhost:3000/api/current-user");
+            const res = await fetch("/api/current-user");
             console.log(res);
             
             const data = await res.json();
