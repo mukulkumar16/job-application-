@@ -4,9 +4,10 @@ import { GetUserFromCookies } from "@/helper";
 
 
 
-export async function POST(req: NextRequest, { params }: any) {
+export async function POST( req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }) {
   const body = await req.json();
-  const id = params.id;
+  const { id } = await params;
 
   try {
     const job = await prismaclient.openings.update({
@@ -35,9 +36,10 @@ export async function POST(req: NextRequest, { params }: any) {
 }
 
 
-export async function GET(req: NextRequest, { params }: any) {
+export async function GET( req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }) {
   const user = await GetUserFromCookies();
-  const id = params.id;
+  const { id }=   await params;
 
   let userapplied = false;
 
