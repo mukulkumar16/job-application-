@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  // Create a response
-  const res = NextResponse.json({
+export async function POST() {
+  const response = NextResponse.json({
     success: true,
     message: "Logged out successfully",
   });
 
-  // Delete the cookie by setting it to empty and expired
-  res.cookies.set("token", "", {
+  response.cookies.set("token", "", {
     httpOnly: true,
-    expires: new Date(0), // Immediately expire
-    path: "/", // clear for all routes
+    expires: new Date(0),
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   });
 
-  return res;
+  return response;
 }

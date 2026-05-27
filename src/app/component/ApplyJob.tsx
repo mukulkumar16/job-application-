@@ -22,7 +22,21 @@ export default function ApplyJob({ job }) {
         <div className="mt-6 flex justify-center sm:justify-start">
             <button
                 onClick={handleClick}
-                className="w-full sm:w-auto bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300 text-sm sm:text-base"
+               className="
+              w-full sm:w-auto
+              flex items-center justify-center gap-2
+              px-5 py-3
+              rounded-2xl
+              bg-gradient-to-r
+              from-blue-500 to-blue-600
+              text-white
+              font-medium
+              shadow-lg
+              hover:scale-[1.02]
+              active:scale-[0.98]
+              transition-all duration-300
+              disabled:opacity-70
+            "
             >
                 Apply Now
             </button>

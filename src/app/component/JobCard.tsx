@@ -1,33 +1,164 @@
 // @ts-nocheck
 import Link from "next/link";
+import {
+  MapPin,
+  IndianRupee,
+  Building2,
+  ArrowUpRight,
+} from "lucide-react";
 
 export default function JobCard({ job }) {
+
   return (
-    <div className="p-5 border rounded-2xl shadow-md hover:shadow-lg transition bg-white flex flex-col justify-between h-[400px] max-w-full sm:w-[300px] md:w-[350px] lg:w-[370px]">
-      <div className="flex items-center gap-4 mb-4">
-        <div>
-          <h2 className="text-lg font-bold text-emerald-700">{job.title}</h2>
-          <Link href={`/company/${job.company.id}`}>
-            <h2 className="text-sm font-bold text-black">{job.company.name}</h2>
-          </Link>
+    <div
+      className="
+        group
+        relative
+        overflow-hidden
+        rounded-3xl
+        border border-slate-800
+        bg-slate-950/90
+        backdrop-blur-xl
+        shadow-xl
+        hover:shadow-cyan-500/10
+        transition-all duration-300
+        hover:-translate-y-1
+        w-full
+        max-w-sm
+        min-h-[380px]
+        flex flex-col justify-between
+      "
+    >
+
+      {/* GLOW EFFECT */}
+      <div
+        className="
+          absolute inset-0
+          opacity-0 group-hover:opacity-100
+          transition duration-500
+          bg-gradient-to-br from-cyan-500/5 via-transparent to-violet-500/5
+          pointer-events-none
+        "
+      />
+
+      <div className="relative p-6 flex flex-col h-full">
+
+        {/* TOP */}
+        <div className="flex items-start justify-between gap-4">
+
+          <div className="flex-1">
+
+            {/* JOB TITLE */}
+            <h2
+              className="
+                text-xl font-bold
+                text-white
+                leading-snug
+                line-clamp-2
+              "
+            >
+              {job.title}
+            </h2>
+
+            {/* COMPANY */}
+            <Link href={`/company/${job.company.id}`}>
+              <div
+                className="
+                  mt-3
+                  inline-flex items-center gap-2
+                  text-sm text-cyan-400
+                  hover:text-cyan-300
+                  transition
+                "
+              >
+                <Building2 size={16} />
+                <span className="font-medium">
+                  {job.company.name}
+                </span>
+              </div>
+            </Link>
+
+          </div>
+
+          {/* ICON BADGE */}
+          <div
+            className="
+              flex items-center justify-center
+              w-12 h-12
+              rounded-2xl
+              bg-gradient-to-br from-cyan-500 to-violet-600
+              shadow-lg
+            "
+          >
+            <ArrowUpRight className="text-white" size={22} />
+          </div>
         </div>
-      </div>
 
-      <div className="flex-1">
-        <p className="text-sm text-gray-600 line-clamp-4 mb-2">{job.description}</p>
-        <p className="text-sm text-gray-500">📍 {job.location}</p>
-        <p className="text-sm text-green-600 font-semibold mt-1">
-          💰 {job.salary || "Salary not mentioned"}
-        </p>
-      </div>
+        {/* DESCRIPTION */}
+        <div className="mt-5 flex-1">
 
-      <Link href={`/job/${job.id}`}>
-        <div className="mt-4">
-          <button className="w-full py-2 px-4 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition">
+          <p
+            className="
+              text-sm leading-7
+              text-slate-400
+              line-clamp-4
+            "
+          >
+            {job.description}
+          </p>
+
+          {/* LOCATION */}
+          <div
+            className="
+              flex items-center gap-2
+              mt-5
+              text-sm text-slate-300
+            "
+          >
+            <MapPin size={16} className="text-cyan-400" />
+            <span>{job.location}</span>
+          </div>
+
+          {/* SALARY */}
+          <div
+            className="
+              flex items-center gap-2
+              mt-3
+              text-sm font-semibold
+              text-emerald-400
+            "
+          >
+            <IndianRupee size={16} />
+            <span>
+              {job.salary || "Salary not disclosed"}
+            </span>
+          </div>
+
+        </div>
+
+        {/* BUTTON */}
+        <Link href={`/job/${job.id}`} className="mt-6">
+          <button
+            className="
+              w-full
+              py-3 px-5
+              rounded-2xl
+              bg-gradient-to-r
+              from-cyan-500
+              to-violet-600
+              text-white
+              font-semibold
+              shadow-lg
+              hover:scale-[1.02]
+              active:scale-[0.98]
+              transition-all duration-300
+            "
+          >
             View Details
           </button>
-        </div>
-      </Link>
+        </Link>
+
+      </div>
     </div>
   );
 }

@@ -24,9 +24,9 @@ export default async function Page() {
       
 
 
-    <div className="p-6">
+    <div className="p-6 bg-slate-900 ">
       
-      <h1 className="text-2xl font-bold mb-4">Find Jobs </h1>
+      <h1 className="text-2xl font-bold text-white mb-4">Find Jobs </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {jobs.map((job, idx) => (
           <JobCard key={idx} job={job} />
